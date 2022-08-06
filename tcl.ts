@@ -222,7 +222,7 @@ function tclQuote(s: string): string {
   }
 }
 
-type TestCase = {
+export type TestCase = {
   /**
    * A valid list item.
    *

@@ -381,7 +381,7 @@ export const NON_BREAKING_SPACE = "\xa0";
 export const FIGURE_SPACE = "\u2007";
 
 // https://dev.to/chrismilson/zip-iterator-in-typescript-ldm
-type Iterableify<T> = { [K in keyof T]: Iterable<T[K]> };
+export type Iterableify<T> = { [K in keyof T]: Iterable<T[K]> };
 /**
  * Given a list of iterables, make a single iterable.
  * The resulting iterable will contain arrays.
@@ -449,9 +449,9 @@ export function sum(items: number[]): number {
 }
 
 /**
- * For use with `makeLinear()`.
+ * For use with `makeLinear()` and `makeBoundedLinear()`.
  */
-type LinearFunction = (x: number) => number;
+export type LinearFunction = (x: number) => number;
 
 /**
  * Linear interpolation and extrapolation.
