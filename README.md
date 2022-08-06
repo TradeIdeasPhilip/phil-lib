@@ -5,8 +5,8 @@ Many of these come from stack overflow, but I'm tired of looking them up and add
 
 ## API Docs
 
-* [Miscellaneous (Works with node.js and in the browser.)](https://tradeideasphilip.github.io/phil-lib/modules/client_misc.html)
-* [Miscellaneous (Browser only.)](https://tradeideasphilip.github.io/phil-lib/modules/misc.html)
+* [Miscellaneous (Browser only.)](https://tradeideasphilip.github.io/phil-lib/modules/client_misc.html)
+* [Miscellaneous (Works with node.js and in the browser.)](https://tradeideasphilip.github.io/phil-lib/modules/misc.html)
 * [Support for the TCL programming language](https://tradeideasphilip.github.io/phil-lib/modules/tcl.html)
 
 ## Build Instructions
