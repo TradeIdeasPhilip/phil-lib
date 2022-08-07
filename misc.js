@@ -1,4 +1,7 @@
-export function assertClass(item, ty, notes = "Assertion Failed.") {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.polarToRectangular = exports.makeBoundedLinear = exports.makeLinear = exports.sum = exports.countMap = exports.initializedArray = exports.count = exports.zip = exports.FIGURE_SPACE = exports.NON_BREAKING_SPACE = exports.dateIsValid = exports.MIN_DATE = exports.MAX_DATE = exports.makePromise = exports.filterMap = exports.pick = exports.pickAny = exports.csvStringToArray = exports.parseTimeT = exports.parseIntX = exports.parseFloatX = exports.getAttribute = exports.followPath = exports.parseXml = exports.testXml = exports.sleep = exports.assertClass = void 0;
+function assertClass(item, ty, notes = "Assertion Failed.") {
     const failed = (typeFound) => {
         throw new Error(`${notes}  Expected type:  ${ty.name}.  Found type:  ${typeFound}.`);
     };
@@ -16,10 +19,12 @@ export function assertClass(item, ty, notes = "Assertion Failed.") {
     }
     throw new Error("wtf");
 }
-export function sleep(ms) {
+exports.assertClass = assertClass;
+function sleep(ms) {
     return new Promise((resolve) => setTimeout(resolve, ms));
 }
-export function testXml(xmlStr) {
+exports.sleep = sleep;
+function testXml(xmlStr) {
     const parser = new DOMParser();
     const dom = parser.parseFromString(xmlStr, "application/xml");
     for (const element of Array.from(dom.querySelectorAll("parsererror"))) {
@@ -29,7 +34,8 @@ export function testXml(xmlStr) {
     }
     return { parsed: dom };
 }
-export function parseXml(bytes) {
+exports.testXml = testXml;
+function parseXml(bytes) {
     if (bytes === undefined) {
         return undefined;
     }
@@ -38,7 +44,8 @@ export function parseXml(bytes) {
         return parsed?.parsed?.documentElement;
     }
 }
-export function followPath(from, ...path) {
+exports.parseXml = parseXml;
+function followPath(from, ...path) {
     for (const transition of path) {
         if (from === undefined) {
             return undefined;
@@ -58,7 +65,8 @@ export function followPath(from, ...path) {
     }
     return from;
 }
-export function getAttribute(attributeName, from, ...path) {
+exports.followPath = followPath;
+function getAttribute(attributeName, from, ...path) {
     from = followPath(from, ...path);
     if (from === undefined) {
         return undefined;
@@ -68,7 +76,8 @@ export function getAttribute(attributeName, from, ...path) {
     }
     return from.getAttribute(attributeName) ?? undefined;
 }
-export function parseFloatX(source) {
+exports.getAttribute = getAttribute;
+function parseFloatX(source) {
     if (source === undefined || source === null) {
         return undefined;
     }
@@ -80,7 +89,8 @@ export function parseFloatX(source) {
         return undefined;
     }
 }
-export function parseIntX(source) {
+exports.parseFloatX = parseFloatX;
+function parseIntX(source) {
     const result = parseFloatX(source);
     if (result === undefined) {
         return undefined;
@@ -94,7 +104,8 @@ export function parseIntX(source) {
         return result;
     }
 }
-export function parseTimeT(source) {
+exports.parseIntX = parseIntX;
+function parseTimeT(source) {
     if (typeof source === "string") {
         source = parseIntX(source);
     }
@@ -106,7 +117,8 @@ export function parseTimeT(source) {
     }
     return new Date(source * 1000);
 }
-export const csvStringToArray = (data) => {
+exports.parseTimeT = parseTimeT;
+const csvStringToArray = (data) => {
     const re = /(,|\r?\n|\r|^)(?:"([^"]*(?:""[^"]*)*)"|([^,\r\n]*))/gi;
     const result = [[]];
     let matches;
@@ -117,7 +129,8 @@ export const csvStringToArray = (data) => {
     }
     return result;
 };
-export function pickAny(set) {
+exports.csvStringToArray = csvStringToArray;
+function pickAny(set) {
     const first = set.values().next();
     if (first.done) {
         return undefined;
@@ -126,10 +139,12 @@ export function pickAny(set) {
         return first.value;
     }
 }
-export function pick(array) {
+exports.pickAny = pickAny;
+function pick(array) {
     return array[(Math.random() * array.length) | 0];
 }
-export function filterMap(input, transform) {
+exports.pick = pick;
+function filterMap(input, transform) {
     const result = [];
     input.forEach((input, index) => {
         const possibleElement = transform(input, index);
@@ -139,7 +154,8 @@ export function filterMap(input, transform) {
     });
     return result;
 }
-export function makePromise() {
+exports.filterMap = filterMap;
+function makePromise() {
     let resolve;
     let reject;
     const promise = new Promise((resolve1, reject1) => {
@@ -148,14 +164,16 @@ export function makePromise() {
     });
     return { promise, resolve, reject };
 }
-export const MAX_DATE = new Date(8640000000000000);
-export const MIN_DATE = new Date(-8640000000000000);
-export function dateIsValid(date) {
+exports.makePromise = makePromise;
+exports.MAX_DATE = new Date(8640000000000000);
+exports.MIN_DATE = new Date(-8640000000000000);
+function dateIsValid(date) {
     return isFinite(date.getTime());
 }
-export const NON_BREAKING_SPACE = "\xa0";
-export const FIGURE_SPACE = "\u2007";
-export function* zip(...toZip) {
+exports.dateIsValid = dateIsValid;
+exports.NON_BREAKING_SPACE = "\xa0";
+exports.FIGURE_SPACE = "\u2007";
+function* zip(...toZip) {
     const iterators = toZip.map((i) => i[Symbol.iterator]());
     while (true) {
         const results = iterators.map((i) => i.next());
@@ -165,29 +183,34 @@ export function* zip(...toZip) {
         yield results.map(({ value }) => value);
     }
 }
-export function* count(start = 0, end = Infinity, step = 1) {
+exports.zip = zip;
+function* count(start = 0, end = Infinity, step = 1) {
     for (let i = start; i < end; i += step) {
         yield i;
     }
 }
-export function initializedArray(count, callback) {
+exports.count = count;
+function initializedArray(count, callback) {
     const result = [];
     for (let i = 0; i < count; i++) {
         result.push(callback(i));
     }
     return result;
 }
-export const countMap = initializedArray;
-export function sum(items) {
+exports.initializedArray = initializedArray;
+exports.countMap = initializedArray;
+function sum(items) {
     return items.reduce((accumulator, current) => accumulator + current, 0);
 }
-export function makeLinear(x1, y1, x2, y2) {
+exports.sum = sum;
+function makeLinear(x1, y1, x2, y2) {
     const slope = (y2 - y1) / (x2 - x1);
     return function (x) {
         return (x - x1) * slope + y1;
     };
 }
-export function makeBoundedLinear(x1, y1, x2, y2) {
+exports.makeLinear = makeLinear;
+function makeBoundedLinear(x1, y1, x2, y2) {
     if (x2 < x1) {
         [x1, y1, x2, y2] = [x2, y2, x1, y1];
     }
@@ -204,7 +227,9 @@ export function makeBoundedLinear(x1, y1, x2, y2) {
         }
     };
 }
-export function polarToRectangular(r, θ) {
+exports.makeBoundedLinear = makeBoundedLinear;
+function polarToRectangular(r, θ) {
     return { x: Math.sin(θ) * r, y: Math.cos(θ) * r };
 }
+exports.polarToRectangular = polarToRectangular;
 //# sourceMappingURL=misc.js.map

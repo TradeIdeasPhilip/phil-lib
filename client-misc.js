@@ -1,5 +1,8 @@
-import { assertClass, makePromise } from "./misc.js";
-export function getById(id, ty) {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.createElementFromHTML = exports.getHashInfo = exports.getAudioBalanceControl = exports.getBlobFromCanvas = exports.loadDateTimeLocal = exports.getById = void 0;
+const misc_js_1 = require("./misc.js");
+function getById(id, ty) {
     const found = document.getElementById(id);
     if (!found) {
         throw new Error("Could not find element with id " + id + ".  Expected type:  " + ty.name);
@@ -16,7 +19,8 @@ export function getById(id, ty) {
             ty.name);
     }
 }
-export function loadDateTimeLocal(input, dateAndTime, truncateTo = "milliseconds") {
+exports.getById = getById;
+function loadDateTimeLocal(input, dateAndTime, truncateTo = "milliseconds") {
     let truncateBy;
     switch (truncateTo) {
         case "minutes": {
@@ -39,8 +43,9 @@ export function loadDateTimeLocal(input, dateAndTime, truncateTo = "milliseconds
     input.valueAsNumber =
         +dateAndTime - dateAndTime.getTimezoneOffset() * 60000 - truncateBy;
 }
-export function getBlobFromCanvas(canvas) {
-    const { reject, resolve, promise } = makePromise();
+exports.loadDateTimeLocal = loadDateTimeLocal;
+function getBlobFromCanvas(canvas) {
+    const { reject, resolve, promise } = (0, misc_js_1.makePromise)();
     canvas.toBlob((blob) => {
         if (!blob) {
             reject(new Error("blob is null!"));
@@ -51,7 +56,8 @@ export function getBlobFromCanvas(canvas) {
     });
     return promise;
 }
-export function getAudioBalanceControl(audioElement) {
+exports.getBlobFromCanvas = getBlobFromCanvas;
+function getAudioBalanceControl(audioElement) {
     const audioContext = new AudioContext();
     const track = audioContext.createMediaElementSource(audioElement);
     const stereoNode = new StereoPannerNode(audioContext, { pan: 0 });
@@ -60,7 +66,8 @@ export function getAudioBalanceControl(audioElement) {
         stereoNode.pan.value = balance;
     };
 }
-export function getHashInfo() {
+exports.getAudioBalanceControl = getAudioBalanceControl;
+function getHashInfo() {
     const result = new Map();
     const hashString = /^#?(.*)$/.exec(location.hash.replace("+", "%20"))[1];
     const pairs = hashString.split("&");
@@ -74,9 +81,11 @@ export function getHashInfo() {
     });
     return result;
 }
-export function createElementFromHTML(htmlString, ty) {
+exports.getHashInfo = getHashInfo;
+function createElementFromHTML(htmlString, ty) {
     var div = document.createElement("div");
     div.innerHTML = htmlString.trim();
-    return assertClass(div.firstChild, ty, "createElementFromHTML:");
+    return (0, misc_js_1.assertClass)(div.firstChild, ty, "createElementFromHTML:");
 }
+exports.createElementFromHTML = createElementFromHTML;
 //# sourceMappingURL=client-misc.js.map

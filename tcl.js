@@ -1,4 +1,7 @@
-import { initializedArray } from "./misc";
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.tclUnitTest = exports.tclList = void 0;
+const misc_1 = require("./misc");
 function encodeTclListElement(toEncode) {
     if (typeof toEncode === "string") {
         return tclQuote(toEncode);
@@ -16,7 +19,7 @@ function encodeTclListElement(toEncode) {
         return tclQuote(tclList(toEncode));
     }
 }
-export function tclList(list) {
+function tclList(list) {
     let result = "";
     for (const item of list) {
         if (result != "") {
@@ -26,6 +29,7 @@ export function tclList(list) {
     }
     return result;
 }
+exports.tclList = tclList;
 function isUnprintableAscii(char) {
     const charCode = char.charCodeAt(0);
     return charCode < 32 || charCode == 127;
@@ -158,11 +162,11 @@ function tclQuote(s) {
         return s;
     }
 }
-export function tclUnitTest(additionalTestCases = []) {
+function tclUnitTest(additionalTestCases = []) {
     const testCases = [
         ...additionalTestCases,
         {
-            source: String.fromCharCode(...initializedArray(128, (i) => i)),
+            source: String.fromCharCode(...(0, misc_1.initializedArray)(128, (i) => i)),
             notes: "all ASCII chars",
             expectedResult: "\\x00\\x01\\x02\\x03\\x04\\x05\\x06\\x07\\b\\t\\n\\v\\f\\r\\x0e\\x0f\\x10\\x11\\x12\\x13\\x14\\x15\\x16\\x17\\x18\\x19\\x1a\\x1b\\x1c\\x1d\\x1e\\x1f\\ !\\\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\\\]^_`abcdefghijklmnopqrstuvwxyz\\{|\\}~\\x7f",
         },
@@ -271,4 +275,5 @@ export function tclUnitTest(additionalTestCases = []) {
         console.log("SUCCESS", { successCount });
     }
 }
+exports.tclUnitTest = tclUnitTest;
 //# sourceMappingURL=tcl.js.map
