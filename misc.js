@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.polarToRectangular = exports.makeBoundedLinear = exports.makeLinear = exports.sum = exports.countMap = exports.initializedArray = exports.count = exports.zip = exports.FIGURE_SPACE = exports.NON_BREAKING_SPACE = exports.dateIsValid = exports.MIN_DATE = exports.MAX_DATE = exports.makePromise = exports.filterMap = exports.pick = exports.pickAny = exports.csvStringToArray = exports.parseTimeT = exports.parseIntX = exports.parseFloatX = exports.getAttribute = exports.followPath = exports.parseXml = exports.testXml = exports.sleep = exports.assertClass = void 0;
+exports.permutations = exports.polarToRectangular = exports.makeBoundedLinear = exports.makeLinear = exports.sum = exports.countMap = exports.initializedArray = exports.count = exports.zip = exports.FIGURE_SPACE = exports.NON_BREAKING_SPACE = exports.dateIsValid = exports.MIN_DATE = exports.MAX_DATE = exports.makePromise = exports.filterMap = exports.pick = exports.pickAny = exports.csvStringToArray = exports.parseTimeT = exports.parseIntX = exports.parseFloatX = exports.getAttribute = exports.followPath = exports.parseXml = exports.testXml = exports.sleep = exports.assertClass = void 0;
 function assertClass(item, ty, notes = "Assertion Failed.") {
     const failed = (typeFound) => {
         throw new Error(`${notes}  Expected type:  ${ty.name}.  Found type:  ${typeFound}.`);
@@ -232,4 +232,21 @@ function polarToRectangular(r, θ) {
     return { x: Math.sin(θ) * r, y: Math.cos(θ) * r };
 }
 exports.polarToRectangular = polarToRectangular;
+function* permutations(toPermute, prefix = []) {
+    if (toPermute.length == 0) {
+        yield prefix;
+    }
+    else {
+        for (let index = 0; index < toPermute.length; index++) {
+            const nextItem = toPermute[index];
+            const newPrefix = [...prefix, nextItem];
+            const stillNeedToPermute = [
+                ...toPermute.slice(0, index),
+                ...toPermute.slice(index + 1),
+            ];
+            yield* permutations(stillNeedToPermute, newPrefix);
+        }
+    }
+}
+exports.permutations = permutations;
 //# sourceMappingURL=misc.js.map

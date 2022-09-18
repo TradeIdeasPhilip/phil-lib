@@ -1,6 +1,6 @@
 {
   "name": "phil-lib",
-  "version": "1.0.2",
+  "version": "1.1.1",
   "description": "Blazingly fast TypeScript library for Node.js and the browser.",
   "main": "index.js",
   "scripts": {

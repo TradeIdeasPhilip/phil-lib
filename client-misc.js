@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.createElementFromHTML = exports.getHashInfo = exports.getAudioBalanceControl = exports.getBlobFromCanvas = exports.loadDateTimeLocal = exports.getById = void 0;
+exports.download = exports.createElementFromHTML = exports.getHashInfo = exports.getAudioBalanceControl = exports.getBlobFromCanvas = exports.loadDateTimeLocal = exports.getById = void 0;
 const misc_js_1 = require("./misc.js");
 function getById(id, ty) {
     const found = document.getElementById(id);
@@ -88,4 +88,18 @@ function createElementFromHTML(htmlString, ty) {
     return (0, misc_js_1.assertClass)(div.firstChild, ty, "createElementFromHTML:");
 }
 exports.createElementFromHTML = createElementFromHTML;
+function download(filename, text) {
+    var pom = document.createElement("a");
+    pom.setAttribute("href", "data:text/plain;charset=utf-8," + encodeURIComponent(text));
+    pom.setAttribute("download", filename);
+    if (document.createEvent) {
+        var event = document.createEvent("MouseEvents");
+        event.initEvent("click", true, true);
+        pom.dispatchEvent(event);
+    }
+    else {
+        pom.click();
+    }
+}
+exports.download = download;
 //# sourceMappingURL=client-misc.js.map

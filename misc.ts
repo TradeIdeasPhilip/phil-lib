@@ -517,3 +517,30 @@ export function makeBoundedLinear(
 export function polarToRectangular(r: number, θ: number) {
   return { x: Math.sin(θ) * r, y: Math.cos(θ) * r };
 }
+
+/**
+ * Create all permutations of an array.
+ * @param toPermute The items that need to find a location.  Initially all items are here.
+ * @param prefix The items that are already in the correct place.  Initially this is empty.  New items will be added to the end of this list.
+ * @returns Something you can iterate over to get all permutations of the original array.
+ */
+export function* permutations<T>(
+  toPermute: readonly T[],
+  prefix: readonly T[] = []
+): Generator<readonly T[], void, undefined> {
+  if (toPermute.length == 0) {
+    yield prefix;
+  } else {
+    for (let index = 0; index < toPermute.length; index++) {
+      const nextItem = toPermute[index];
+      const newPrefix = [...prefix, nextItem];
+      const stillNeedToPermute = [
+        ...toPermute.slice(0, index),
+        ...toPermute.slice(index + 1),
+      ];
+      yield* permutations(stillNeedToPermute, newPrefix);
+    }
+  }
+}
+//console.log(Array.from(permutations(["A", "B", "C"])), Array.from(permutations([1 , 2, 3, 4])), Array.from(permutations([])));
+

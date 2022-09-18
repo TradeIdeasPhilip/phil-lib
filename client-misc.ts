@@ -152,3 +152,34 @@ export function createElementFromHTML<T extends object>(
   // Change div.firstChild to div.childNodes to support multiple top-level nodes.
   return assertClass(div.firstChild, ty, "createElementFromHTML:");
 }
+
+/**
+ * Save a string to a local file.
+ * 
+ * On chrome this will instantly save the file to the downloads directory.  On Safari I got
+ * a security warning the first time, then I was allowed to instantly download things.
+ * 
+ * Chrome will get upset if you do too many downloads.  Consider creating a zip file if
+ * you want to save a lot of files.
+ * @param filename The preferred file name.  Chrome will add (1) or similar if that filename already exists.
+ * @param text The contents of the file.
+ */
+export function download(filename: string, text: string) {
+  // Source:  https://stackoverflow.com/a/18197511/971955
+  // TODO move this to to phil-lib
+  var pom = document.createElement("a");
+  pom.setAttribute(
+    "href",
+    "data:text/plain;charset=utf-8," + encodeURIComponent(text)
+  );
+  pom.setAttribute("download", filename);
+  if (document.createEvent) {
+    var event = document.createEvent("MouseEvents");
+    // I wonder why we need this if statement.  initEvent() is deprecated.
+    // why not always use the else case?
+    event.initEvent("click", true, true);
+    pom.dispatchEvent(event);
+  } else {
+    pom.click();
+  }
+}
