@@ -15,7 +15,7 @@ Manually bump the package version number in `package.json`.  Then run `npm updat
 Then type:
 
 ```
-tsc
+npx tsc
 npx typedoc *.ts
 git add .
 git commit

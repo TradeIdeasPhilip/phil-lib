@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.tclUnitTest = exports.tclList = void 0;
+exports.tclList = tclList;
+exports.tclUnitTest = tclUnitTest;
 const misc_1 = require("./misc");
 function encodeTclListElement(toEncode) {
     if (typeof toEncode === "string") {
@@ -29,7 +30,6 @@ function tclList(list) {
     }
     return result;
 }
-exports.tclList = tclList;
 function isUnprintableAscii(char) {
     const charCode = char.charCodeAt(0);
     return charCode < 32 || charCode == 127;
@@ -275,5 +275,4 @@ function tclUnitTest(additionalTestCases = []) {
         console.log("SUCCESS", { successCount });
     }
 }
-exports.tclUnitTest = tclUnitTest;
 //# sourceMappingURL=tcl.js.map

@@ -1,6 +1,12 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.download = exports.createElementFromHTML = exports.getHashInfo = exports.getAudioBalanceControl = exports.getBlobFromCanvas = exports.loadDateTimeLocal = exports.getById = void 0;
+exports.getById = getById;
+exports.loadDateTimeLocal = loadDateTimeLocal;
+exports.getBlobFromCanvas = getBlobFromCanvas;
+exports.getAudioBalanceControl = getAudioBalanceControl;
+exports.getHashInfo = getHashInfo;
+exports.createElementFromHTML = createElementFromHTML;
+exports.download = download;
 const misc_js_1 = require("./misc.js");
 function getById(id, ty) {
     const found = document.getElementById(id);
@@ -19,7 +25,6 @@ function getById(id, ty) {
             ty.name);
     }
 }
-exports.getById = getById;
 function loadDateTimeLocal(input, dateAndTime, truncateTo = "milliseconds") {
     let truncateBy;
     switch (truncateTo) {
@@ -43,7 +48,6 @@ function loadDateTimeLocal(input, dateAndTime, truncateTo = "milliseconds") {
     input.valueAsNumber =
         +dateAndTime - dateAndTime.getTimezoneOffset() * 60000 - truncateBy;
 }
-exports.loadDateTimeLocal = loadDateTimeLocal;
 function getBlobFromCanvas(canvas) {
     const { reject, resolve, promise } = (0, misc_js_1.makePromise)();
     canvas.toBlob((blob) => {
@@ -56,7 +60,6 @@ function getBlobFromCanvas(canvas) {
     });
     return promise;
 }
-exports.getBlobFromCanvas = getBlobFromCanvas;
 function getAudioBalanceControl(audioElement) {
     const audioContext = new AudioContext();
     const track = audioContext.createMediaElementSource(audioElement);
@@ -66,7 +69,6 @@ function getAudioBalanceControl(audioElement) {
         stereoNode.pan.value = balance;
     };
 }
-exports.getAudioBalanceControl = getAudioBalanceControl;
 function getHashInfo() {
     const result = new Map();
     const hashString = /^#?(.*)$/.exec(location.hash.replace("+", "%20"))[1];
@@ -81,13 +83,11 @@ function getHashInfo() {
     });
     return result;
 }
-exports.getHashInfo = getHashInfo;
 function createElementFromHTML(htmlString, ty) {
     var div = document.createElement("div");
     div.innerHTML = htmlString.trim();
     return (0, misc_js_1.assertClass)(div.firstChild, ty, "createElementFromHTML:");
 }
-exports.createElementFromHTML = createElementFromHTML;
 function download(filename, text) {
     var pom = document.createElement("a");
     pom.setAttribute("href", "data:text/plain;charset=utf-8," + encodeURIComponent(text));
@@ -101,5 +101,4 @@ function download(filename, text) {
         pom.click();
     }
 }
-exports.download = download;
 //# sourceMappingURL=client-misc.js.map
