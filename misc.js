@@ -12,6 +12,7 @@ exports.parseIntX = parseIntX;
 exports.parseTimeT = parseTimeT;
 exports.pickAny = pickAny;
 exports.pick = pick;
+exports.take = take;
 exports.filterMap = filterMap;
 exports.makePromise = makePromise;
 exports.dateIsValid = dateIsValid;
@@ -51,7 +52,9 @@ function assertClass(item, ty, notes = "Assertion Failed.") {
     throw new Error("wtf");
 }
 function sleep(ms) {
-    return new Promise((resolve) => setTimeout(resolve, ms));
+    return new Promise((resolve) => {
+        setTimeout(resolve, ms);
+    });
 }
 function testXml(xmlStr) {
     const parser = new DOMParser();
@@ -163,6 +166,14 @@ function pickAny(set) {
 }
 function pick(array) {
     return array[(Math.random() * array.length) | 0];
+}
+function take(array) {
+    if (array.length < 1) {
+        throw new Error("wtf");
+    }
+    const index = (Math.random() * array.length) | 0;
+    const removed = array.splice(index, 1);
+    return removed[0];
 }
 function filterMap(input, transform) {
     const result = [];

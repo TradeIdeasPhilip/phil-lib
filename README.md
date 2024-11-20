@@ -5,12 +5,13 @@ Many of these come from stack overflow, but I'm tired of looking them up and add
 
 ## API Docs
 
-* [Miscellaneous (Browser only.)](https://tradeideasphilip.github.io/phil-lib/modules/client_misc.html)
-* [Miscellaneous (Works with node.js and in the browser.)](https://tradeideasphilip.github.io/phil-lib/modules/misc.html)
-* [Support for the TCL programming language](https://tradeideasphilip.github.io/phil-lib/modules/tcl.html)
+- [Miscellaneous (Browser only.)](https://tradeideasphilip.github.io/phil-lib/modules/client_misc.html)
+- [Miscellaneous (Works with node.js and in the browser.)](https://tradeideasphilip.github.io/phil-lib/modules/misc.html)
+- [Support for the TCL programming language](https://tradeideasphilip.github.io/phil-lib/modules/tcl.html)
 
 ## Build Instructions
-Manually bump the package version number in `package.json`.  Then run `npm update` to copy that version number into `package-lock.json`.
+
+Manually bump the package version number in `package.json`. Then run `npm update` to copy that version number into `package-lock.json`.
 
 Then type:
 
@@ -23,6 +24,10 @@ git push
 npm publish
 ```
 
+You might have to publish to git hub then update the documentation one more time then publish that final result to GitHub.
+That will make sure that the pointers from the documentation back to the source code will point to the correct version on GitHub.
+This should make no important difference to the `npm` package.
+
 ## Test Instructions
 
 ### NPM Link
@@ -33,7 +38,7 @@ In this directory: `npm link`
 
 In the main / test program directory: `npm link phil-lib`
 
-Special instructions if the main program uses vite:  https://stackoverflow.com/questions/67964556/cant-support-npm-link-added-local-package-in-vite-cli
+Special instructions if the main program uses vite: https://stackoverflow.com/questions/67964556/cant-support-npm-link-added-local-package-in-vite-cli
 
 ### GitHub
 
@@ -53,3 +58,7 @@ I could build and test everything locally, before committing, publishing, or oth
 ## Alternate Format
 
 If you don't like `npm` see https://github.com/TradeIdeasPhilip/lib.
+
+That package is mostly obsolete.
+Use `npm` or one of its modern replacements.
+Ignore the plethora of older solutions and use a package manager.

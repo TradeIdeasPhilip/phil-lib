@@ -7,9 +7,9 @@
  * @returns item
  * @throws If the item is not of the correct type, throw an `Error` with a detailed message.
  */
-export function assertClass<T extends object>(
+export function assertClass<T extends object, ARGS extends any[]>(
   item: unknown,
-  ty: { new (): T },
+  ty: { new (...args: ARGS): T },
   notes = "Assertion Failed."
 ): T {
   const failed = (typeFound: string) => {
@@ -38,7 +38,9 @@ export function assertClass<T extends object>(
  */
 export function sleep(ms: number) {
   // https://stackoverflow.com/a/39914235/971955
-  return new Promise((resolve) => setTimeout(resolve, ms));
+  return new Promise((resolve): void => {
+    setTimeout(resolve, ms);
+  });
 }
 
 /**
@@ -290,13 +292,32 @@ export function pickAny<T>(set: ReadonlySet<T>): T | undefined {
 }
 
 /**
+ * Returns a randomly selected element of the array.
  *
+ * See `take()` for a destructive version of this function.
  * @param array Pick from here.
  * @returns A randomly selected element of the array.
  * @throws An error if the array is empty.
  */
 export function pick<T>(array: ArrayLike<T>): T {
   return array[(Math.random() * array.length) | 0];
+}
+
+/**
+ * Destructively remove and return a random element from an array.
+ *
+ * See `pick()` for a non-destructive version of this function.
+ * @param array Take a random element from here, destructively.
+ * @returns The element that was removed.
+ * @throws An error if the array is empty.
+ */
+export function take<T>(array: T[]): T {
+  if (array.length < 1) {
+    throw new Error("wtf");
+  }
+  const index = (Math.random() * array.length) | 0;
+  const removed = array.splice(index, 1);
+  return removed[0];
 }
 
 /**
