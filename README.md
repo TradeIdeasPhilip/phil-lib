@@ -3,6 +3,15 @@
 A collection of useful odds and ends.
 Many of these come from stack overflow, but I'm tired of looking them up and adding TypeScript annotations each time I need them.
 
+## Release Notes
+
+Version 1.4.0 includes one serious bug fix, several small improvements, and a lot of new features.
+
+This is a collection of items that I've been copying from one project to another.
+
+`polarToRectangular()` was giving completely incorrect results.
+I need to find the projects that used bad version, so I don't break them with this upgrade.
+
 ## API Docs
 
 - [Miscellaneous (Browser only.)](https://tradeideasphilip.github.io/phil-lib/modules/client_misc.html)
