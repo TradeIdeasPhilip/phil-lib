@@ -183,3 +183,28 @@ export function download(filename: string, text: string) {
     pom.click();
   }
 }
+
+/**
+ * This is a wrapper around `requestAnimationFrame()`.
+ * It automatically calls `requestAnimationFrame()` over and over until you `cancel()` it.
+ */
+export class AnimationLoop {
+  constructor(private readonly onWake: (time: DOMHighResTimeStamp) => void) {
+    this.callback = this.callback.bind(this);
+    // This next line isn't quite right.
+    // Sometimes this timestamp is greater than the timestamp of the first requestAnimationFrame() callback.
+    // It seemed like a good idea at the time.
+    // this.callback(performance.now());
+    requestAnimationFrame(this.callback);
+  }
+  #cancelled = false;
+  cancel() {
+    this.#cancelled = true;
+  }
+  private callback(time: DOMHighResTimeStamp) {
+    if (!this.#cancelled) {
+      requestAnimationFrame(this.callback);
+      this.onWake(time);
+    }
+  }
+}

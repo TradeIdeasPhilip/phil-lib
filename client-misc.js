@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.AnimationLoop = void 0;
 exports.getById = getById;
 exports.loadDateTimeLocal = loadDateTimeLocal;
 exports.getBlobFromCanvas = getBlobFromCanvas;
@@ -101,4 +102,23 @@ function download(filename, text) {
         pom.click();
     }
 }
+class AnimationLoop {
+    onWake;
+    constructor(onWake) {
+        this.onWake = onWake;
+        this.callback = this.callback.bind(this);
+        requestAnimationFrame(this.callback);
+    }
+    #cancelled = false;
+    cancel() {
+        this.#cancelled = true;
+    }
+    callback(time) {
+        if (!this.#cancelled) {
+            requestAnimationFrame(this.callback);
+            this.onWake(time);
+        }
+    }
+}
+exports.AnimationLoop = AnimationLoop;
 //# sourceMappingURL=client-misc.js.map

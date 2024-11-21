@@ -295,11 +295,14 @@ export function pickAny<T>(set: ReadonlySet<T>): T | undefined {
  * Returns a randomly selected element of the array.
  *
  * See `take()` for a destructive version of this function.
- * @param array Pick from here.
+ * @param array Pick from here.  Must not be empty.
  * @returns A randomly selected element of the array.
  * @throws An error if the array is empty.
  */
 export function pick<T>(array: ArrayLike<T>): T {
+  if (array.length == 0) {
+    throw new Error("wtf");
+  }
   return array[(Math.random() * array.length) | 0];
 }
 
@@ -576,26 +579,6 @@ export class Random {
     ints.push((Math.random() * 2 ** 31) | 0);
     const seed = JSON.stringify(ints);
     return seed;
-  }
-}
-
-export class AnimationLoop {
-  constructor(private readonly onWake: (time: DOMHighResTimeStamp) => void) {
-    this.callback = this.callback.bind(this);
-    // This next line isn't quite right.
-    // Sometimes this timestamp is greater than the timestamp of the first requestAnimationFrame() callback.
-    // TODO fix it.
-    this.callback(performance.now());
-  }
-  #cancelled = false;
-  cancel() {
-    this.#cancelled = true;
-  }
-  private callback(time: DOMHighResTimeStamp) {
-    if (!this.#cancelled) {
-      requestAnimationFrame(this.callback);
-      this.onWake(time);
-    }
   }
 }
 

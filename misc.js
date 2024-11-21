@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.countMap = exports.AnimationLoop = exports.Random = exports.phi = exports.radiansPerDegree = exports.degreesPerRadian = exports.FULL_CIRCLE = exports.FIGURE_SPACE = exports.NON_BREAKING_SPACE = exports.MIN_DATE = exports.MAX_DATE = exports.csvStringToArray = void 0;
+exports.countMap = exports.Random = exports.phi = exports.radiansPerDegree = exports.degreesPerRadian = exports.FULL_CIRCLE = exports.FIGURE_SPACE = exports.NON_BREAKING_SPACE = exports.MIN_DATE = exports.MAX_DATE = exports.csvStringToArray = void 0;
 exports.assertClass = assertClass;
 exports.sleep = sleep;
 exports.testXml = testXml;
@@ -165,6 +165,9 @@ function pickAny(set) {
     }
 }
 function pick(array) {
+    if (array.length == 0) {
+        throw new Error("wtf");
+    }
     return array[(Math.random() * array.length) | 0];
 }
 function take(array) {
@@ -288,25 +291,6 @@ class Random {
     }
 }
 exports.Random = Random;
-class AnimationLoop {
-    onWake;
-    constructor(onWake) {
-        this.onWake = onWake;
-        this.callback = this.callback.bind(this);
-        this.callback(performance.now());
-    }
-    #cancelled = false;
-    cancel() {
-        this.#cancelled = true;
-    }
-    callback(time) {
-        if (!this.#cancelled) {
-            requestAnimationFrame(this.callback);
-            this.onWake(time);
-        }
-    }
-}
-exports.AnimationLoop = AnimationLoop;
 function rectUnion(r1, r2) {
     const x = Math.min(r1.x, r2.x);
     const y = Math.min(r1.y, r2.y);

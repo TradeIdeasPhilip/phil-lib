@@ -24,7 +24,7 @@ git push
 npm publish
 ```
 
-You might have to publish to git hub then update the documentation one more time then publish that final result to GitHub.
+You might have to publish to GitHub then update the documentation one more time then publish that final result to GitHub.
 That will make sure that the pointers from the documentation back to the source code will point to the correct version on GitHub.
 This should make no important difference to the `npm` package.
 
