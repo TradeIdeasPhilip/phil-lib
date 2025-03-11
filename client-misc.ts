@@ -166,7 +166,6 @@ export function createElementFromHTML<T extends object>(
  */
 export function download(filename: string, text: string) {
   // Source:  https://stackoverflow.com/a/18197511/971955
-  // TODO move this to to phil-lib
   var pom = document.createElement("a");
   pom.setAttribute(
     "href",
