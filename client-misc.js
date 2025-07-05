@@ -2,12 +2,15 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AnimationLoop = void 0;
 exports.getById = getById;
+exports.selectorQueryAll = selectorQueryAll;
+exports.selectorQuery = selectorQuery;
 exports.loadDateTimeLocal = loadDateTimeLocal;
 exports.getBlobFromCanvas = getBlobFromCanvas;
 exports.getAudioBalanceControl = getAudioBalanceControl;
 exports.getHashInfo = getHashInfo;
 exports.createElementFromHTML = createElementFromHTML;
 exports.download = download;
+exports.getDataUrl = getDataUrl;
 const misc_js_1 = require("./misc.js");
 function getById(id, ty) {
     const found = document.getElementById(id);
@@ -25,6 +28,19 @@ function getById(id, ty) {
             ".  Expected type:  " +
             ty.name);
     }
+}
+function selectorQueryAll(selector, ty, min = 1, max = Infinity, start = document) {
+    const result = [];
+    start.querySelectorAll(selector).forEach((element) => {
+        result.push((0, misc_js_1.assertClass)(element, ty));
+    });
+    if (result.length < min || result.length > max) {
+        throw new Error(`Expecting "${selector}" to return [${min} - ${max}] instances of ${ty.name}, found ${result.length}.`);
+    }
+    return result;
+}
+function selectorQuery(selector, ty, start = document) {
+    return selectorQueryAll(selector, ty, 1, 1, start)[0];
 }
 function loadDateTimeLocal(input, dateAndTime, truncateTo = "milliseconds") {
     let truncateBy;
@@ -121,4 +137,23 @@ class AnimationLoop {
     }
 }
 exports.AnimationLoop = AnimationLoop;
+async function getDataUrl(url) {
+    const image = document.createElement("img");
+    image.src = url;
+    await image.decode();
+    const height = image.naturalHeight;
+    const width = image.naturalWidth;
+    if (height == 0 || width == 0) {
+        throw new Error("problem with image");
+    }
+    const canvas = document.createElement("canvas");
+    canvas.width = width;
+    canvas.height = height;
+    const context = canvas.getContext("2d");
+    if (!context) {
+        throw new Error("wtf");
+    }
+    context.drawImage(image, 0, 0, canvas.width, canvas.height);
+    return canvas.toDataURL();
+}
 //# sourceMappingURL=client-misc.js.map

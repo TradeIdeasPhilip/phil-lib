@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.countMap = exports.Random = exports.phi = exports.radiansPerDegree = exports.degreesPerRadian = exports.FULL_CIRCLE = exports.FIGURE_SPACE = exports.NON_BREAKING_SPACE = exports.MIN_DATE = exports.MAX_DATE = exports.csvStringToArray = void 0;
 exports.assertClass = assertClass;
+exports.assertNonNullable = assertNonNullable;
 exports.sleep = sleep;
 exports.testXml = testXml;
 exports.parseXml = parseXml;
@@ -33,6 +34,8 @@ exports.makeLinear = makeLinear;
 exports.makeBoundedLinear = makeBoundedLinear;
 exports.polarToRectangular = polarToRectangular;
 exports.permutations = permutations;
+exports.gcd = gcd;
+exports.lcm = lcm;
 function assertClass(item, ty, notes = "Assertion Failed.") {
     const failed = (typeFound) => {
         throw new Error(`${notes}  Expected type:  ${ty.name}.  Found type:  ${typeFound}.`);
@@ -50,6 +53,12 @@ function assertClass(item, ty, notes = "Assertion Failed.") {
         return item;
     }
     throw new Error("wtf");
+}
+function assertNonNullable(value) {
+    if (value === undefined || value === null) {
+        throw new Error("wtf");
+    }
+    return value;
 }
 function sleep(ms) {
     return new Promise((resolve) => {
@@ -71,8 +80,8 @@ function parseXml(bytes) {
         return undefined;
     }
     else {
-        const parsed = testXml(bytes);
-        return parsed?.parsed?.documentElement;
+        const { parsed } = testXml(bytes);
+        return parsed?.documentElement;
     }
 }
 function followPath(from, ...path) {
@@ -155,8 +164,8 @@ const csvStringToArray = (data) => {
     return result;
 };
 exports.csvStringToArray = csvStringToArray;
-function pickAny(set) {
-    const first = set.values().next();
+function pickAny(container) {
+    const first = container.values().next();
     if (first.done) {
         return undefined;
     }
@@ -246,8 +255,11 @@ function rotateArray(input, by) {
     }
 }
 class Random {
+    constructor() {
+        throw new Error("wtf");
+    }
     static sfc32(a, b, c, d) {
-        return function () {
+        function random() {
             a |= 0;
             b |= 0;
             c |= 0;
@@ -259,35 +271,105 @@ class Random {
             c = (c << 21) | (c >>> 11);
             c = (c + t) | 0;
             return (t >>> 0) / 4294967296;
-        };
+        }
+        const result = random;
+        Object.defineProperty(result, "currentSeed", {
+            get() {
+                return JSON.stringify([a, b, c, d]);
+            },
+        });
+        return result;
     }
     static #nextSeedInt = 42;
+    static seedIsValid(seed) {
+        try {
+            this.create(seed);
+            return true;
+        }
+        catch {
+            return false;
+        }
+    }
     static create(seed = this.newSeed()) {
         console.info(seed);
         const seedObject = JSON.parse(seed);
         if (!(seedObject instanceof Array)) {
-            throw new Error("invalid seed");
+            throw new Error("invalid input");
         }
         if (seedObject.length != 4) {
-            throw new Error("invalid seed");
+            throw new Error("invalid input");
         }
         const [a, b, c, d] = seedObject;
         if (!(typeof a == "number" &&
             typeof b == "number" &&
             typeof c == "number" &&
             typeof d == "number")) {
-            throw new Error("invalid seed");
+            throw new Error("invalid input");
         }
         return this.sfc32(a, b, c, d);
     }
     static newSeed() {
         const ints = [];
-        ints.push(Date.now());
-        ints.push(this.#nextSeedInt++);
+        ints.push(Date.now() | 0);
+        ints.push(this.#nextSeedInt++ | 0);
         ints.push((Math.random() * 2 ** 31) | 0);
-        ints.push((Math.random() * 2 ** 31) | 0);
+        ints.push((performance.now() * 10000) | 0);
         const seed = JSON.stringify(ints);
         return seed;
+    }
+    static fromString(s) {
+        try {
+            return this.create(s);
+        }
+        catch {
+            return this.create(this.anyStringToSeed(s));
+        }
+    }
+    static anyStringToSeed(input) {
+        function rotateLeft32(value, shift) {
+            return ((value << shift) | (value >>> (32 - shift))) >>> 0;
+        }
+        const ints = [0x9e3779b9, 0x243f6a88, 0x85a308d3, 0x13198a2e];
+        const data = new TextEncoder().encode(input);
+        data.forEach((byte) => {
+            ints[0] ^= byte;
+            ints[0] = rotateLeft32(ints[0], 3);
+            ints[1] ^= byte;
+            ints[1] = rotateLeft32(ints[1], 5);
+            ints[2] ^= byte;
+            ints[2] = rotateLeft32(ints[2], 7);
+            ints[3] ^= byte;
+            ints[3] = rotateLeft32(ints[3], 11);
+        });
+        ints[0] ^= rotateLeft32(ints[1], 7);
+        ints[1] ^= rotateLeft32(ints[2], 11);
+        ints[2] ^= rotateLeft32(ints[3], 13);
+        ints[3] ^= rotateLeft32(ints[0], 17);
+        return JSON.stringify(ints);
+    }
+    static test() {
+        const maxGenerators = 10;
+        const iterationsPerCycle = 20;
+        const generators = [this.create()];
+        while (generators.length <= maxGenerators) {
+            for (let iteration = 0; iteration < iterationsPerCycle; iteration++) {
+                const results = generators.map((generator) => generator());
+                for (let i = 1; i < results.length; i++) {
+                    if (results[i] !== results[0]) {
+                        debugger;
+                        throw new Error("wtf");
+                    }
+                }
+            }
+            const currentSeed = pick(generators).currentSeed;
+            generators.forEach((generator) => {
+                if (generator.currentSeed != currentSeed) {
+                    debugger;
+                    throw new Error("wtf");
+                }
+            });
+            generators.push(this.create(currentSeed));
+        }
     }
 }
 exports.Random = Random;
@@ -324,7 +406,7 @@ function lerp(at0, at1, where) {
 }
 function assertFinite(...values) {
     values.forEach((value) => {
-        if (!isFinite(value)) {
+        if (!Number.isFinite(value)) {
             throw new Error("wtf");
         }
     });
@@ -403,5 +485,14 @@ function* permutations(toPermute, prefix = []) {
             yield* permutations(stillNeedToPermute, newPrefix);
         }
     }
+}
+function gcd(a, b) {
+    if (!b) {
+        return a;
+    }
+    return gcd(b, a % b);
+}
+function lcm(a, b) {
+    return (a * b) / gcd(a, b);
 }
 //# sourceMappingURL=misc.js.map

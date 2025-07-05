@@ -30,6 +30,20 @@ export function assertClass<T extends object, ARGS extends any[]>(
 }
 
 /**
+ * Asserts that the value is not `undefined` or `null`.
+ * Similar to ! or NonNullable, but also performs the check at runtime.
+ * @param value The value to check and return.
+ * @returns The given value.
+ * @throws If `value === undefined || value === null`.
+ */
+export function assertNonNullable<T>(value: T): NonNullable<T> {
+  if (value === undefined || value === null) {
+    throw new Error("wtf");
+  }
+  return value;
+}
+
+/**
  * This is a wrapper around setTimeout() that works with await.
  *
  * `await sleep(100)`;
@@ -105,8 +119,8 @@ export function parseXml(bytes: string | undefined): Element | undefined {
   if (bytes === undefined) {
     return undefined;
   } else {
-    const parsed = testXml(bytes);
-    return parsed?.parsed?.documentElement;
+    const { parsed } = testXml(bytes);
+    return parsed?.documentElement;
   }
 }
 
@@ -278,12 +292,15 @@ export const csvStringToArray = (data: string) => {
 };
 
 /**
- * Pick any arbitrary element from the set.
- * @param set
- * @returns An item in the set.  Unless the set is empty, then it returns undefined.
+ * Pick any arbitrary element from the container.
+ * @param container Presumably a Map or a Set.
+ * Something with a `.values()` iterator.
+ * @returns An item in the set or a value from the map.  Unless the input is empty, then this returns undefined.
  */
-export function pickAny<T>(set: ReadonlySet<T>): T | undefined {
-  const first = set.values().next();
+export function pickAny<T>(
+  container: Pick<ReadonlySet<T>, "values">
+): T | undefined {
+  const first = container.values().next();
   if (first.done) {
     return undefined;
   } else {
@@ -561,7 +578,7 @@ export class Random {
   }
   /**
    * Create a new instance of a random number generator.
-   * 
+   *
    * Also consider `Random.fromString()` which is slightly newer.
    * This only works with seeds that have been created and saved by
    * this class.  `Random.fromString()` can turn any string into a
@@ -769,7 +786,7 @@ export function lerp(at0: number, at1: number, where: number) {
  */
 export function assertFinite(...values: number[]): void {
   values.forEach((value) => {
-    if (!isFinite(value)) {
+    if (!Number.isFinite(value)) {
       throw new Error("wtf");
     }
   });
@@ -952,3 +969,18 @@ export function* permutations<T>(
   }
 }
 //console.log(Array.from(permutations(["A", "B", "C"])), Array.from(permutations([1 , 2, 3, 4])), Array.from(permutations([])));
+
+/**
+ * Greatest Common Divisor.
+ */
+export function gcd(a: number, b: number) {
+  if (!b) {
+    return a;
+  }
+  return gcd(b, a % b);
+}
+
+/** Least Common Multiple */
+export function lcm(a: number, b: number) {
+  return (a * b) / gcd(a, b);
+}

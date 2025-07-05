@@ -30,6 +30,65 @@ export function getById<T extends Element>(id: string, ty: { new (): T }): T {
 }
 
 /**
+ * This is a wrapper around `window.selectorQueryAll()`.
+ * This is analogous to `getById()`.
+ *
+ * This includes a lot of assertions.
+ * These have good error messages aimed at a developer.
+ * The assumption is that you will run this very early in the main program and store the results in a constant.
+ * If there is a problem we want to catch it ASAP.
+ *
+ * You can set the min and max number of elements.
+ * That's another thing that's good to check early.
+ * The default range is 1 - Infinity.
+ * Set `min` to 0 to completely disable this test.
+ *
+ * @param selector What you are looking for.  E.g. `"[data-precisionIssues]"`
+ * @param ty The expected type of the items.  E.g. `SVGTextElement`
+ * @param min The minimum number of items allowed.  Defaults to 1.
+ * @param max The maximum number of items allowed.  Defaults to Infinity.
+ * @returns An array containing all of the objects that matches the selector.
+ * @throws If we don't get the right number of objects or if any of the objects have the wrong type.
+ */
+export function selectorQueryAll<T extends Element>(
+  selector: string,
+  ty: { new (): T },
+  min = 1,
+  max = Infinity,
+  start: Pick<Document, "querySelectorAll"> = document
+): readonly T[] {
+  const result: T[] = [];
+  start.querySelectorAll(selector).forEach((element) => {
+    result.push(assertClass(element, ty));
+  });
+  if (result.length < min || result.length > max) {
+    throw new Error(
+      `Expecting "${selector}" to return [${min} - ${max}] instances of ${ty.name}, found ${result.length}.`
+    );
+  }
+  return result;
+}
+
+/**
+ * This is a wrapper around `document.selectorQuery()`.
+ * 
+ * This looks for elements matching the query string.
+ * This ensures that exactly one element matches the query string, and that element has the expected type.
+ * @param selector What to search for.  E.g. `"#main p:first-child"`
+ * @param ty The expected type.  E.g. `HTMLParagraphElement`
+ * @param start Where to look for the element.  Defaults to `window.document`.
+ * @returns The new element.
+ * @throws If we don't find the object, we find multiple matching objects or we find an object of the wrong type.
+ */
+export function selectorQuery<T extends Element>(
+  selector: string,
+  ty: { new (): T },
+  start: Pick<Document, "querySelectorAll"> = document
+): T {
+  return selectorQueryAll(selector, ty, 1, 1, start)[0];
+}
+
+/**
  * Store the given date and time into the given input element.
  * Everything will be displayed in local time, similar to dateAndTime.toString().
  *
@@ -155,10 +214,10 @@ export function createElementFromHTML<T extends object>(
 
 /**
  * Save a string to a local file.
- * 
+ *
  * On chrome this will instantly save the file to the downloads directory.  On Safari I got
  * a security warning the first time, then I was allowed to instantly download things.
- * 
+ *
  * Chrome will get upset if you do too many downloads.  Consider creating a zip file if
  * you want to save a lot of files.
  * @param filename The preferred file name.  Chrome will add (1) or similar if that filename already exists.
@@ -206,4 +265,32 @@ export class AnimationLoop {
       this.onWake(time);
     }
   }
+}
+
+/**
+ * Convert an image into a data url.
+ * @param url A url that points to an image.
+ * @returns A data url that represents the same image.
+ */
+export async function getDataUrl(url: string) {
+  const image = document.createElement("img");
+  image.src = url;
+  await image.decode();
+  const height = image.naturalHeight;
+  const width = image.naturalWidth;
+  if (height == 0 || width == 0) {
+    // The documentation suggests that decode() will throw an exception if there is a problem.
+    // However, as I recall the promise resolves to undefined as soon as the image succeeds or fails.
+    // I'm using this test to know if it failed.
+    throw new Error("problem with image");
+  }
+  const canvas = document.createElement("canvas");
+  canvas.width = width;
+  canvas.height = height;
+  const context = canvas.getContext("2d");
+  if (!context) {
+    throw new Error("wtf");
+  }
+  context.drawImage(image, 0, 0, canvas.width, canvas.height);
+  return canvas.toDataURL();
 }
