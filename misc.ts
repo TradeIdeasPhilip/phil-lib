@@ -505,7 +505,12 @@ export function rotateArray<T>(input: ReadonlyArray<T>, by: number) {
   }
 }
 
-type RandomFunction = {
+/**
+ * This is a drop in replacement for `window.random()`.
+ * You can also ask for the current seed, for us in a call to
+ * or Random.create(), Random.fromString() or Random.seedIsValid().
+ */
+export type RandomFunction = {
   readonly currentSeed: string;
   (): number;
 };
